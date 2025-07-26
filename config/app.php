@@ -114,8 +114,8 @@ return [
 
     'parser' => [
         'book' => [
-            'remote' => env('BOOK_REMOTE_SOURCE'),
-            'local' => env('BOOK_LOCAL_PATH'),
+            'remote_url' => env('BOOK_REMOTE_SOURCE'),
+            'local_path' => env('BOOK_LOCAL_PATH'),
         ],
     ],
 

@@ -1,10 +1,9 @@
-include .env.example
 serviceList=php nginx mysql redis
 sshContainer=php
 mysqlContainer=mysql
 
 build: ## Builds docker-compose
-	cd .docker && docker-compose build --no-cache $(sshContainer)
+	docker-compose build --no-cache $(sshContainer)
 
 set-app-slug: ## Converts APP_NAME to DOCKER_APP_SLUG
 	@APP_NAME=$$(grep '^APP_NAME=' .env | cut -d '=' -f2-); \
@@ -19,20 +18,127 @@ generate-db-password: ## Generate and set a random DB_PASSWORD in .env
 	@PASS=$$(cat /dev/urandom | tr -dc 'A-Za-z0-9' | head -c 10); \
 	sed -i.bak -e "s/^DB_PASSWORD=.*/DB_PASSWORD=$$PASS/" .env && rm -f .env.bak
 
+set-nginx-port: ## Sets the first free port starting from 8080 to .env as DOCKER_NGINX_PORT
+	@PLATFORM=$$(uname); \
+	PORT=8080; \
+	while true; do \
+		if [ "$$PLATFORM" = "Darwin" ]; then \
+			if ! lsof -iTCP:$$PORT -sTCP:LISTEN >/dev/null 2>&1; then break; fi; \
+		else \
+			if ! ss -tuln | grep -q ":$$PORT "; then break; fi; \
+		fi; \
+		PORT=$$((PORT + 1)); \
+	done; \
+	echo "Free nginx port: $$PORT"; \
+	sed -i.bak -e "s/^DOCKER_NGINX_PORT=.*/DOCKER_NGINX_PORT=$$PORT/" .env && rm -f .env.bak; \
+	echo "DOCKER_NGINX_PORT set into .env"
+
+set-nginx-ssl-port: ## Sets the first free port starting from 8443 to .env as DOCKER_NGINX_SSL_PORT
+	@PLATFORM=$$(uname); \
+	PORT=8443; \
+	while true; do \
+		if [ "$$PLATFORM" = "Darwin" ]; then \
+			if ! lsof -iTCP:$$PORT -sTCP:LISTEN >/dev/null 2>&1; then break; fi; \
+		else \
+			if ! ss -tuln | grep -q ":$$PORT "; then break; fi; \
+		fi; \
+		PORT=$$((PORT + 1)); \
+	done; \
+	echo "Free nginx ssl port: $$PORT"; \
+	sed -i.bak -e "s/^DOCKER_NGINX_SSL_PORT=.*/DOCKER_NGINX_SSL_PORT=$$PORT/" .env && rm -f .env.bak; \
+	echo "DOCKER_NGINX_SSL_PORT set into .env"
+
+set-mysql-port: ## Sets the first free port starting from 3307 to .env as DOCKER_MYSQL_PORT
+	@PLATFORM=$$(uname); \
+	PORT=3307; \
+	while true; do \
+		if [ "$$PLATFORM" = "Darwin" ]; then \
+			if ! lsof -iTCP:$$PORT -sTCP:LISTEN >/dev/null 2>&1; then break; fi; \
+		else \
+			if ! ss -tuln | grep -q ":$$PORT "; then break; fi; \
+		fi; \
+		PORT=$$((PORT + 1)); \
+	done; \
+	echo "Free MySql port: $$PORT"; \
+	sed -i.bak -e "s/^DOCKER_MYSQL_PORT=.*/DOCKER_MYSQL_PORT=$$PORT/" .env && rm -f .env.bak; \
+	echo "DOCKER_MYSQL_PORT set into .env"
+
+set-redis-port: ## Sets the first free port starting from 6380 to .env as DOCKER_REDIS_PORT
+	@PLATFORM=$$(uname); \
+	PORT=6380; \
+	while true; do \
+		if [ "$$PLATFORM" = "Darwin" ]; then \
+			if ! lsof -iTCP:$$PORT -sTCP:LISTEN >/dev/null 2>&1; then break; fi; \
+		else \
+			if ! ss -tuln | grep -q ":$$PORT "; then break; fi; \
+		fi; \
+		PORT=$$((PORT + 1)); \
+	done; \
+	echo "Free Redis port: $$PORT"; \
+	sed -i.bak -e "s/^DOCKER_REDIS_PORT=.*/DOCKER_REDIS_PORT=$$PORT/" .env && rm -f .env.bak; \
+	echo "DOCKER_REDIS_PORT set into .env"
+
+set-xdebug-port: ## Sets the first free port starting from 9001 to .env as DOCKER_XDEBUG_PORT
+	@PLATFORM=$$(uname); \
+	PORT=9001; \
+	while true; do \
+		if [ "$$PLATFORM" = "Darwin" ]; then \
+			if ! lsof -iTCP:$$PORT -sTCP:LISTEN >/dev/null 2>&1; then break; fi; \
+		else \
+			if ! ss -tuln | grep -q ":$$PORT "; then break; fi; \
+		fi; \
+		PORT=$$((PORT + 1)); \
+	done; \
+	echo "Free Xdebug port: $$PORT"; \
+	sed -i.bak -e "s/^DOCKER_XDEBUG_PORT=.*/DOCKER_XDEBUG_PORT=$$PORT/" .env && rm -f .env.bak; \
+	echo "DOCKER_XDEBUG_PORT set into .env"
+
+set-docker-remote-host: ## Set DOCKER_REMOTE_HOST in .env
+	@HOST_IP=""; \
+	if command -v ip >/dev/null 2>&1; then \
+		HOST_IP=$$(ip route | grep default | awk '{print $$3}'); \
+	elif command -v route >/dev/null 2>&1; then \
+		HOST_IP=$$(route -n get default | grep 'gateway' | awk '{print $$2}'); \
+	else \
+		echo "⚠️  Could not auto-detect host IP. Using fallback 172.17.0.1"; \
+		HOST_IP="172.17.0.1"; \
+	fi; \
+	echo "✅ Detected or fallback HOST_IP=$$HOST_IP"; \
+	sed -i.bak -e "s/^DOCKER_REMOTE_HOST=.*/DOCKER_REMOTE_HOST=$$HOST_IP/" .env && rm -f .env.bak
+
+set-docker-server-name: ## Set DOCKER_SERVER_NAME in .env
+	@APP_NAME=$$(grep '^APP_NAME=' .env | cut -d '=' -f2- | xargs); \
+	SLUG=$$(echo "$$APP_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g'); \
+	FINAL_NAME="\"Docker-$$SLUG\""; \
+	if grep -q '^DOCKER_SERVER_NAME=' .env; then \
+		sed -i.bak -e "s/^DOCKER_SERVER_NAME=.*/DOCKER_SERVER_NAME=$$FINAL_NAME/" .env; \
+	else \
+		echo "DOCKER_SERVER_NAME=$$FINAL_NAME" >> .env; \
+	fi; \
+	rm -f .env.bak; \
+	echo "Set DOCKER_SERVER_NAME=$$FINAL_NAME"
+
 install: ## First installation
-	@cp .env.example .env
+	rm -rf .docker/mysql/volumes/* && \
+	cp .env.example .env
 	@make set-app-slug
 	@make set-user-group
 	@make generate-db-password
-	rm -rf .docker/mysql/volumes/* && \
-	make restart && \
+	@make set-nginx-port
+	@make set-nginx-ssl-port
+	@make set-mysql-port
+	@make set-redis-port
+	@make set-xdebug-port
+	@make set-docker-server-name
+	@make set-docker-remote-host
+	@make restart && \
 	docker-compose exec $(sshContainer) bash -c "\
 		composer install && \
 		composer dump-autoload && \
 		php artisan migrate:fresh && \
 		php artisan db:seed && \
-		php artisan key:generate" && \
-	make restart
+		php artisan key:generate"
+	@make restart
 
 kill: ## Stops all docker containers
 	docker stop $(shell docker ps -aq)

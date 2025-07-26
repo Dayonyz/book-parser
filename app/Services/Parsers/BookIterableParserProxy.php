@@ -13,12 +13,12 @@ class BookIterableParserProxy implements IterableParser
 
     private function __construct()
     {
-        $url = config('app.parser.book.remote');
+        $url = config('app.parser.book.remote_url');
 
         $this->parser = new RemoteJsonIterableParser(
             $url,
             new BookJsonEntryTransformer(),
-            new RemoteJsonDownloader($url, config('app.parser.book.local'))
+            new RemoteJsonDownloader($url, config('app.parser.book.local_path'))
         );
     }
 
