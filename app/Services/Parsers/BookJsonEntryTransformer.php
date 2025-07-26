@@ -68,12 +68,12 @@ class BookJsonEntryTransformer extends JsonEntryTransformer
             'shortDescription' => function ($entry) {
                 $shortDescription =  $entry['shortDescription'] ?? null;
 
-                return new TransformedField('short_description', $shortDescription);
+                return new TransformedField('short_description', trim($shortDescription));
             },
             'longDescription' => function ($entry) {
                 $longDescription =  $entry['longDescription'] ?? null;
 
-                return new TransformedField('description', $longDescription);
+                return new TransformedField('description', trim($longDescription));
             },
             'authors' => function($entry) {
                 if (!isset($entry['authors']) || !is_array($entry['authors'])) {
