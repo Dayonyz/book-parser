@@ -4,10 +4,6 @@ sshContainer=php
 mysqlContainer=mysql
 
 build: ## Builds docker-compose
-	@cp .env.example .env
-	@make set-app-slug
-	@make set-user-group
-	@make generate-db-password
 	cd .docker && docker-compose build --no-cache $(sshContainer)
 
 set-app-slug: ## Converts APP_NAME to DOCKER_APP_SLUG
@@ -24,6 +20,10 @@ generate-db-password: ## Generate and set a random DB_PASSWORD in .env
 	sed -i.bak -e "s/^DB_PASSWORD=.*/DB_PASSWORD=$$PASS/" .env && rm -f .env.bak
 
 install: ## First installation
+	@cp .env.example .env
+	@make set-app-slug
+	@make set-user-group
+	@make generate-db-password
 	rm -rf .docker/mysql/volumes/* && \
 	make restart && \
 	docker-compose exec $(sshContainer) bash -c "\
