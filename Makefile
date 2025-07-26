@@ -119,6 +119,7 @@ set-docker-server-name: ## Set DOCKER_SERVER_NAME in .env
 	echo "Set DOCKER_SERVER_NAME=$$FINAL_NAME"
 
 install: ## First installation
+	@make stop && \
 	rm -rf .docker/mysql/volumes/* && \
 	cp .env.example .env
 	@make set-app-slug
