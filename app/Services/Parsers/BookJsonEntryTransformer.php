@@ -3,14 +3,14 @@
 namespace App\Services\Parsers;
 
 use App\Exceptions\InvalidEntryTransformerException;
-use App\Services\Parsers\Contracts\EntryTransformer;
+use App\Services\Parsers\Contracts\JsonEntryTransformer;
 use App\Services\Parsers\ValueObjects\TransformedField;
 use DateTime;
 use Exception;
 use Illuminate\Support\Facades\Validator;
 use JetBrains\PhpStorm\ArrayShape;
 
-class BookEntryTransformer extends EntryTransformer
+class BookJsonEntryTransformer extends JsonEntryTransformer
 {
     #[ArrayShape([
         'isbn' => "\Closure",

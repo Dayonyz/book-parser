@@ -4,7 +4,7 @@ namespace App\Services\Parsers\Contracts;
 
 use Generator;
 
-interface Parser
+interface IterableParser
 {
     public function iterateEntries(): Generator;
 }

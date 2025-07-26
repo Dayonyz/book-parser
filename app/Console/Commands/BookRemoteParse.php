@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Services\Importers\BookImporter;
-use App\Services\Parsers\BookParserProxy;
+use App\Services\Parsers\BookIterableParserProxy;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -30,7 +30,7 @@ class BookRemoteParse extends Command
      */
     public function handle()
     {
-        $parser = BookParserProxy::makeInstance();
+        $parser = BookIterableParserProxy::makeInstance();
 
         $imported = 0;
         foreach ($parser->iterateEntries() as $entry) {

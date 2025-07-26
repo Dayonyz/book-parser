@@ -2,7 +2,7 @@
 
 namespace App\Services\Parsers\Contracts;
 
-interface Transformer
+interface ArrayTransformer
 {
     public function transform(array $entry): array;
 }

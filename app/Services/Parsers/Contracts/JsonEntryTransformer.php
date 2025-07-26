@@ -6,7 +6,7 @@ use App\Services\Parsers\ValueObjects\TransformedField;
 use Exception;
 use InvalidArgumentException;
 
-abstract class EntryTransformer implements Transformer
+abstract class JsonEntryTransformer implements ArrayTransformer
 {
     private array $transformMaps;
 

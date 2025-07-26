@@ -2,22 +2,22 @@
 
 namespace App\Services\Parsers;
 
-use App\Services\Parsers\Contracts\Parser;
+use App\Services\Parsers\Contracts\IterableParser;
 use Exception;
 use Generator;
 
-class BookParserProxy implements Parser
+class BookIterableParserProxy implements IterableParser
 {
-    private RemoteJsonParser $parser;
-    private static ?BookParserProxy $instance = null;
+    private RemoteJsonIterableParser $parser;
+    private static ?BookIterableParserProxy $instance = null;
 
     private function __construct()
     {
         $url = config('app.parser.book.remote');
 
-        $this->parser = new RemoteJsonParser(
+        $this->parser = new RemoteJsonIterableParser(
             $url,
-            new BookEntryTransformer(),
+            new BookJsonEntryTransformer(),
             new RemoteJsonDownloader($url, config('app.parser.book.local'))
         );
     }
