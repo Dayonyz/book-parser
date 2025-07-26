@@ -132,7 +132,7 @@ install: ## First installation
 	@make set-xdebug-port
 	@make set-docker-server-name
 	@make set-docker-remote-host
-	@make restart && \
+	@make start && \
 	docker-compose exec $(sshContainer) bash -c "\
 		composer install && \
 		composer dump-autoload && \
