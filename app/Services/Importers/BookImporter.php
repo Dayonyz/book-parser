@@ -13,7 +13,7 @@ class BookImporter
         DB::transaction(function () use ($parsedBook) {
             $book = Book::updateOrCreate(
                 ['isbn' => $parsedBook['isbn']],
-                array_diff_key($parsedBook, array_flip(['authors']))
+                array_diff_key($parsedBook, array_flip(['authors', 'isbn']))
             );
 
             $authorIds = collect($parsedBook['authors'])->map(function (string $authorName) {
