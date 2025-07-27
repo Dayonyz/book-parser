@@ -4,7 +4,6 @@ namespace App\Services\Parsers\Contracts;
 
 use App\Exceptions\InvalidEntryTransformerException;
 use App\Services\Parsers\ValueObjects\TransformedField;
-use Exception;
 use InvalidArgumentException;
 
 abstract class JsonEntryTransformer implements ArrayTransformer
