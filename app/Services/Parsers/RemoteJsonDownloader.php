@@ -3,7 +3,6 @@
 namespace App\Services\Parsers;
 
 use Exception;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Process;
 
 class RemoteJsonDownloader
