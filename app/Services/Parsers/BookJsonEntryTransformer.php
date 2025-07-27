@@ -96,6 +96,32 @@ class BookJsonEntryTransformer extends JsonEntryTransformer
                     fn($v) => $v !== ''
                 );
 
+                $normalizeAuthors = function (array $rawAuthors):array {
+                    $result = [];
+
+                    $excluded = ['friends', 'editors'];
+
+                    foreach ($rawAuthors as $authorEntry) {
+                        $entry = preg_replace('/\b(with contributions by|with|and)\b/i', ',', $authorEntry);
+
+                        $authors = array_filter(array_map('trim', explode(',', $entry)));
+
+                        foreach ($authors as $author) {
+                            $authorNormalized = strtolower(trim($author));
+
+                            if ($authorNormalized === '' || in_array($authorNormalized, $excluded, true)) {
+                                continue;
+                            }
+
+                            $result[] = $author;
+                        }
+                    }
+
+                    return array_values(array_unique($result));
+                };
+
+                $filteredAuthors = $normalizeAuthors($filteredAuthors);
+
                 if (empty($filteredAuthors)) {
                     throw new InvalidEntryTransformerException(
                         "Missing or invalid 'authors'",
