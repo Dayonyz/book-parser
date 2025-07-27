@@ -112,13 +112,6 @@ class BookJsonEntryTransformer extends JsonEntryTransformer
                                 continue;
                             }
 
-                            if (stripos($part, 'Contributions from') === 0) {
-                                $alreadyExists = array_filter($result, fn($r) => stripos($r, 'Contributions from') === 0);
-                                if (!empty($alreadyExists)) {
-                                    continue;
-                                }
-                            }
-
                             $result[] = $part;
                         }
                     }
