@@ -103,13 +103,24 @@ class BookJsonEntryTransformer extends JsonEntryTransformer
                     foreach ($authors as $author) {
                         $cleaned = preg_replace('/\b(friends|editors)\b/i', '', $author);
 
-                        $parts = preg_split('/\b(?:and|with|edited by|writing as|;)\b/i', $cleaned, flags: PREG_SPLIT_NO_EMPTY);
+                        $parts = preg_split(
+                            '/\b(?:and|with|edited by|writing as|contributions by|;)\b/i',
+                            $cleaned,
+                            flags: PREG_SPLIT_NO_EMPTY
+                        );
 
                         foreach ($parts as $part) {
                             $part = trim($part, " \t\n\r\0\x0B;");
 
                             if ($part === '' || is_numeric($part)) {
                                 continue;
+                            }
+
+                            if (stripos($part, 'Contributions from') === 0) {
+                                $alreadyExists = array_filter($result, fn($r) => stripos($r, 'Contributions from') === 0);
+                                if (!empty($alreadyExists)) {
+                                    continue;
+                                }
                             }
 
                             $result[] = $part;
