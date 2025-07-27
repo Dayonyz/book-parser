@@ -96,24 +96,30 @@ class BookJsonEntryTransformer extends JsonEntryTransformer
                     fn($v) => $v !== ''
                 );
 
-                $normalizeAuthors = function (array $rawAuthors):array {
+                $normalizeAuthors = function (array $authors): array
+                {
                     $result = [];
 
-                    $excluded = ['friends', 'editors'];
+                    foreach ($authors as $author) {
+                        $cleaned = preg_replace('/\b(friends|editors)\b/i', '', $author);
 
-                    foreach ($rawAuthors as $authorEntry) {
-                        $entry = preg_replace('/\b(with contributions by|with|and)\b/i', ',', $authorEntry);
+                        $parts = preg_split('/\b(?:and|with|edited by|writing as|;)\b/i', $cleaned, flags: PREG_SPLIT_NO_EMPTY);
 
-                        $authors = array_filter(array_map('trim', explode(',', $entry)));
+                        foreach ($parts as $part) {
+                            $part = trim($part, " \t\n\r\0\x0B;");
 
-                        foreach ($authors as $author) {
-                            $authorNormalized = strtolower(trim($author));
-
-                            if ($authorNormalized === '' || in_array($authorNormalized, $excluded, true)) {
+                            if ($part === '' || is_numeric($part)) {
                                 continue;
                             }
 
-                            $result[] = $author;
+                            if (stripos($part, 'Contributions from') === 0) {
+                                $alreadyExists = array_filter($result, fn($r) => stripos($r, 'Contributions from') === 0);
+                                if (!empty($alreadyExists)) {
+                                    continue;
+                                }
+                            }
+
+                            $result[] = $part;
                         }
                     }
 
