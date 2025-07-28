@@ -3,6 +3,7 @@ sshContainer=php
 mysqlContainer=mysql
 
 build: ## Builds docker-compose
+	@make generate-env: && \
 	docker-compose build --no-cache $(sshContainer)
 
 set-app-slug: ## Converts APP_NAME to DOCKER_APP_SLUG
@@ -118,9 +119,7 @@ set-docker-server-name: ## Set DOCKER_SERVER_NAME in .env
 	rm -f .env.bak; \
 	echo "Set DOCKER_SERVER_NAME=$$FINAL_NAME"
 
-install: ## First installation
-	@make stop && \
-	rm -rf .docker/mysql/volumes/* && \
+generate-env: ## Creates .env from .env.example
 	cp .env.example .env
 	@make set-app-slug
 	@make set-user-group
@@ -132,6 +131,10 @@ install: ## First installation
 	@make set-xdebug-port
 	@make set-docker-server-name
 	@make set-docker-remote-host
+
+install: ## First installation
+	@make stop && \
+	rm -rf .docker/mysql/volumes/*
 	@make start && \
 	docker-compose exec $(sshContainer) bash -c "\
 		composer install && \
