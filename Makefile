@@ -3,7 +3,6 @@ sshContainer=php
 mysqlContainer=mysql
 
 build: ## Builds docker-compose
-	@make generate-env && \
 	docker-compose build --no-cache $(sshContainer)
 
 set-app-slug: ## Converts APP_NAME to DOCKER_APP_SLUG

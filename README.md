@@ -3,6 +3,7 @@
 ## Deploy
 
 ```
+make generate-env
 make build
 make install
 ```
