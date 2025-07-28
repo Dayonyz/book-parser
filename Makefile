@@ -2,7 +2,7 @@ serviceList=php nginx mysql redis
 sshContainer=php
 mysqlContainer=mysql
 
-build: ## Builds docker-compose
+build: ## Builds Docker container
 	docker-compose build --no-cache $(sshContainer)
 
 set-app-slug: ## Converts APP_NAME to DOCKER_APP_SLUG
