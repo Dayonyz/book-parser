@@ -47,8 +47,7 @@ class BookMappedEntryTransformer extends MappedEntryTransformer
                 return new TransformedField('isbn', $data['isbn']);
             },
             'title' => function ($entry) {
-                $data = ['title' => $entry['title'] ?? null];
-                $data['title'] = $data['title'] ? trim($data['title']) : null;
+                $data = ['title' => trim($entry['title'] ?? '') ?: null];
 
                 $validator = Validator::make(
                     $data,
