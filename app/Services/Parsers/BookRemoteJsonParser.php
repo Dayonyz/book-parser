@@ -6,10 +6,10 @@ use App\Services\Parsers\Contracts\IterableParser;
 use Exception;
 use Generator;
 
-class BookJsonParser implements IterableParser
+class BookRemoteJsonParser implements IterableParser
 {
     private RemoteJsonIterableParser $parser;
-    private static ?BookJsonParser $instance = null;
+    private static ?BookRemoteJsonParser $instance = null;
 
     private function __construct()
     {

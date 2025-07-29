@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Services\Importers\BookImporter;
-use App\Services\Parsers\BookJsonParser;
+use App\Services\Parsers\BookRemoteJsonParser;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -30,7 +30,7 @@ class BookRemoteParse extends Command
      */
     public function handle()
     {
-        $parser = BookJsonParser::makeInstance();
+        $parser = BookRemoteJsonParser::makeInstance();
 
         $imported = 0;
         foreach ($parser->iterateEntries() as $entry) {
