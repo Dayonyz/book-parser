@@ -26,7 +26,7 @@ class BookMappedEntryTransformer extends MappedEntryTransformer
             'isbn' => function ($entry) {
                 $data = [];
                 $data['isbn'] = isset($entry['isbn']) && $entry['isbn'] ?
-                    str_replace(['-', ' '], '', trim($entry['isbn'])) :
+                    preg_replace('/[\s\-]+/u', '', $entry['isbn']) :
                     null;
 
                 $validator = Validator::make(
