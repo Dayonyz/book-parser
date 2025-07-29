@@ -3,6 +3,7 @@
 namespace App\Services\Parsers;
 
 use App\Exceptions\InvalidEntryTransformerException;
+use App\Services\Parsers\Contracts\Downloader;
 use App\Services\Parsers\Contracts\EntryTransformer;
 use App\Services\Parsers\Contracts\IterableParser as ParserContract;
 use Exception;
@@ -14,12 +15,12 @@ class RemoteJsonIterableParser implements ParserContract
 {
     private string $url;
     private EntryTransformer $transformer;
-    private ?RemoteJsonDownloader $downloader;
+    private ?Downloader $downloader;
 
     public function __construct(
         string                $url,
         EntryTransformer      $transformer,
-        ?RemoteJsonDownloader $downloader = null
+        ?Downloader $downloader = null
     ) {
         $this->setUrl($url);
         $this->transformer = $transformer;

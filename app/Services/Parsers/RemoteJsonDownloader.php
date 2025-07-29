@@ -2,10 +2,11 @@
 
 namespace App\Services\Parsers;
 
+use App\Services\Parsers\Contracts\Downloader;
 use Exception;
 use Illuminate\Support\Facades\Process;
 
-class RemoteJsonDownloader
+class RemoteJsonDownloader implements Downloader
 {
     public function __construct(
         private readonly string $url,
