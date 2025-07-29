@@ -12,10 +12,10 @@ abstract class MappedEntryTransformer implements EntryTransformer
 
     public function __construct(array $transformMaps = [])
     {
-        $this->setTransformMaps(!empty($transformMaps) ? $transformMaps : static::getTransformMaps());
+        $this->setTransformMaps(!empty($transformMaps) ? $transformMaps : $this->getTransformMaps());
     }
 
-    abstract protected static function getTransformMaps(): array;
+    abstract protected function getTransformMaps(): array;
 
     protected function setTransformMaps(array $transformMaps)
     {
@@ -46,6 +46,7 @@ abstract class MappedEntryTransformer implements EntryTransformer
     {
         //transform maps array is empty - returns as it passed
         if (empty($this->transformMaps)) {
+
             return $entry;
         }
 

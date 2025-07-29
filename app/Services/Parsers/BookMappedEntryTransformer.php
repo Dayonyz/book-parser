@@ -20,7 +20,7 @@ class BookMappedEntryTransformer extends MappedEntryTransformer
         'authors' => "\Closure",
         'publishedDate' => "\Closure"
     ])]
-    protected static function getTransformMaps(): array
+    protected function getTransformMaps(): array
     {
         return [
             'isbn' => function ($entry) {
