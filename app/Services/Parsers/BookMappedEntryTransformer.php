@@ -96,8 +96,7 @@ class BookMappedEntryTransformer extends MappedEntryTransformer
                     fn($v) => $v !== ''
                 );
 
-                $normalizeAuthors = function (array $authors): array
-                {
+                $normalizeAuthors = function (array $authors): array {
                     $result = [];
 
                     foreach ($authors as $author) {
