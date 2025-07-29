@@ -17,7 +17,7 @@ class BookIterableParserProxy implements IterableParser
 
         $this->parser = new RemoteJsonIterableParser(
             $url,
-            new BookJsonEntryTransformer(),
+            new BookMappedEntryTransformer(),
             new RemoteJsonDownloader($url, config('app.parser.book.local_path'))
         );
     }
