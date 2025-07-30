@@ -135,20 +135,17 @@ class BookMappedEntryTransformer extends MappedEntryTransformer
                 return new TransformedField('authors', $filteredAuthors);
             },
             'publishedDate' => function($entry) {
-                if (!isset($entry['publishedDate']) || !isset($entry['publishedDate']['$date'])) {
-                    throw new InvalidEntryTransformerException(
-                        "Missing 'publishedDate' field",
-                        $entry
-                    );
-                }
-
-                try {
-                    $date = new DateTime($entry['publishedDate']['$date']);
-                } catch (Exception) {
-                    throw new InvalidEntryTransformerException(
-                        "Invalid 'publishedDate' format",
-                        $entry
-                    );
+                if (isset($entry['publishedDate']['$date'])) {
+                    try {
+                        $date = new DateTime($entry['publishedDate']['$date']);
+                    } catch (Exception) {
+                        throw new InvalidEntryTransformerException(
+                            "Invalid 'publishedDate' format",
+                            $entry
+                        );
+                    }
+                } else {
+                    $date = null;
                 }
 
                 return new TransformedField('published_at', $date);

@@ -13,24 +13,20 @@ class AuthorController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $query = Author::withCount('books');
-
-        if ($search = $request->input('q')) {
-            $query->where('name', 'like', "%$search%");
-        }
-
-        return AuthorResource::collection($query->paginate(20));
+        return AuthorResource::collection(
+            Author::withCount('books')
+                ->filter($request->only('q'))
+                ->paginate(20)
+        );
     }
 
-    public function books(Author $author): AnonymousResourceCollection
+    public function books(Request $request, Author $author): AnonymousResourceCollection
     {
-        $books = $author->books()->with('authors')->paginate(20);
-
-        return BookResource::collection($books);
-    }
-
-    public function show(Author $author): AuthorResource
-    {
-        return AuthorResource::make($author);
+        return BookResource::collection(
+            $author->books()
+                ->with('authors')
+                ->filter($request->only('q'))
+                ->paginate(20)
+        );
     }
 }

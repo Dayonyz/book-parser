@@ -21,8 +21,6 @@ return new class extends Migration
                 $table->dateTime('published_at')->nullable();
                 $table->timestamps();
 
-                $table->index('title');
-                $table->fullText(['short_description', 'description']);
             });
         }
 
