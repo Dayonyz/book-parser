@@ -6,27 +6,27 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\AuthorResource;
 use App\Http\Resources\BookResource;
 use App\Models\Author;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AuthorController extends Controller
 {
-    public function index(Request $request): AnonymousResourceCollection
+    public function index(Request $request): JsonResponse
     {
-        return AuthorResource::collection(
-            Author::withCount('books')
-                ->filter($request->only('q'))
-                ->paginate(20)
-        );
+        $authors = Author::withCount('books')
+            ->filter($request->only('q'))
+            ->paginate(20);
+
+        return response()->json(AuthorResource::collection($authors));
     }
 
-    public function books(Request $request, Author $author): AnonymousResourceCollection
+    public function books(Request $request, Author $author): JsonResponse
     {
-        return BookResource::collection(
-            $author->books()
-                ->with('authors')
-                ->filter($request->only('q'))
-                ->paginate(20)
-        );
+        $books = $author->books()
+            ->with('authors')
+            ->filter($request->only('q'))
+            ->paginate(20);
+
+        return response()->json(BookResource::collection($books));
     }
 }
