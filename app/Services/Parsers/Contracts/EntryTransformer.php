@@ -2,12 +2,12 @@
 
 namespace App\Services\Parsers\Contracts;
 
-use App\Exceptions\InvalidEntryTransformerException;
+use App\Services\Parsers\Exceptions\InvalidEntryException;
 
 interface EntryTransformer
 {
     /**
-     * @throws InvalidEntryTransformerException
+     * @throws InvalidEntryException
      */
     public function transform(array $entry): array;
 }

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Exceptions;
+namespace App\Services\Parsers\Exceptions;
 
 use Exception;
 
-class InvalidEntryTransformerException extends Exception
+class InvalidEntryException extends Exception
 {
     protected array $invalidData;
 

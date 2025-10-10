@@ -2,7 +2,7 @@
 
 namespace App\Services\Parsers\Contracts;
 
-use App\Exceptions\InvalidEntryTransformerException;
+use App\Services\Parsers\Exceptions\InvalidEntryException;
 use App\Services\Parsers\Contracts\IterableParser as ParserContract;
 use App\Services\Parsers\Dto\EntryResponse;
 use InvalidArgumentException;
@@ -76,7 +76,7 @@ abstract class RemoteJsonIterableParser implements ParserContract
                         true,
                         $transformedEntry,
                     );
-                } catch (InvalidEntryTransformerException $exception) {
+                } catch (InvalidEntryException $exception) {
                     yield new EntryResponse(
                         false,
                         null,

@@ -2,7 +2,7 @@
 
 namespace App\Services\Parsers\Contracts;
 
-use App\Exceptions\InvalidEntryTransformerException;
+use App\Services\Parsers\Exceptions\InvalidEntryException;
 use App\Services\Parsers\Dto\TransformedField;
 use InvalidArgumentException;
 
@@ -44,7 +44,7 @@ abstract class MappedEntryTransformer implements EntryTransformer
     }
 
     /**
-     * @throws InvalidEntryTransformerException
+     * @throws InvalidEntryException
      */
     public function transform(array $entry): array
     {

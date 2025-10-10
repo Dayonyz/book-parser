@@ -2,13 +2,13 @@
 
 namespace App\Services\Parsers;
 
-use App\Exceptions\InvalidEntryTransformerException;
+use App\Services\Parsers\Exceptions\InvalidEntryException;
 use App\Services\Parsers\Contracts\MappedEntryTransformer;
 use App\Services\Parsers\Dto\TransformedField;
-use DateTime;
-use Exception;
 use Illuminate\Support\Facades\Validator;
 use JetBrains\PhpStorm\ArrayShape;
+use DateTime;
+use Exception;
 
 class BookMappedEntryTransformer extends MappedEntryTransformer
 {
@@ -35,7 +35,7 @@ class BookMappedEntryTransformer extends MappedEntryTransformer
                 );
 
                 if ($validator->fails()) {
-                    throw new InvalidEntryTransformerException(
+                    throw new InvalidEntryException(
                         "Validation failed for 'isbn' field while parsing",
                         [
                             'entry' => $entry,
@@ -55,7 +55,7 @@ class BookMappedEntryTransformer extends MappedEntryTransformer
                 );
 
                 if ($validator->fails()) {
-                    throw new InvalidEntryTransformerException(
+                    throw new InvalidEntryException(
                         "Validation failed for 'title' field while parsing",
                         [
                             'entry' => $entry,
@@ -86,7 +86,7 @@ class BookMappedEntryTransformer extends MappedEntryTransformer
             },
             'authors' => function($entry) {
                 if (!isset($entry['authors']) || !is_array($entry['authors'])) {
-                    throw new InvalidEntryTransformerException(
+                    throw new InvalidEntryException(
                         "Missing or invalid 'authors'",
                         $entry
                     );
@@ -126,7 +126,7 @@ class BookMappedEntryTransformer extends MappedEntryTransformer
                 $filteredAuthors = $normalizeAuthors($filteredAuthors);
 
                 if (empty($filteredAuthors)) {
-                    throw new InvalidEntryTransformerException(
+                    throw new InvalidEntryException(
                         "Missing or invalid 'authors'",
                         $entry
                     );
@@ -139,7 +139,7 @@ class BookMappedEntryTransformer extends MappedEntryTransformer
                     try {
                         $date = new DateTime($entry['publishedDate']['$date']);
                     } catch (Exception) {
-                        throw new InvalidEntryTransformerException(
+                        throw new InvalidEntryException(
                             "Invalid 'publishedDate' format",
                             $entry
                         );
