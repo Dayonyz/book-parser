@@ -7,6 +7,7 @@ use App\Services\Parsers\BookRemoteJsonParser;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class BookRemoteParse extends Command
 {
@@ -33,15 +34,19 @@ class BookRemoteParse extends Command
         $parser = BookRemoteJsonParser::makeInstance();
 
         $imported = 0;
-        foreach ($parser->iterateEntries() as $entry) {
-            try {
-                BookImporter::import($entry);
+        $skipped = 0;
+
+        foreach ($parser->iterateEntries() as $result) {
+            if ($result['success']) {
+                BookImporter::import($result['data']);
                 $imported++;
-            } catch (\Throwable $e) {
-                Log::error("Import failed: " . $e->getMessage());
+            } else {
+                $skipped++;
+                Log::warning("Entry skipped: {$result['error']}", $result['raw'] ?? []);
             }
         }
 
-        $this->info("Imported: $imported, Skipped: check logs");
+
+        $this->info("Imported: $imported, Skipped: $skipped, check logs");
     }
 }

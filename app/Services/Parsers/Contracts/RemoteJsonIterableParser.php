@@ -53,26 +53,31 @@ abstract class RemoteJsonIterableParser implements ParserContract
         try {
             while (($line = fgets($handle)) !== false) {
                 $line = trim($line);
-
-                if ($line === '') {
-                    continue;
-                }
+                if ($line === '') continue;
 
                 $entryDecoded = json_decode($line, true);
 
                 if (!$entryDecoded) {
-                    yield "Entry is skipped - Invalid JSON: $line" . PHP_EOL;
+                    yield [
+                        'success' => false,
+                        'error' => "Invalid JSON",
+                        'raw' => $line
+                    ];
                     continue;
                 }
 
                 try {
                     $transformedEntry = $this->transformer->transform($entryDecoded);
-                    yield $transformedEntry;
-
+                    yield [
+                        'success' => true,
+                        'data' => $transformedEntry
+                    ];
                 } catch (InvalidEntryTransformerException $exception) {
-                    Log::warning("Entry skipped: " . $exception->getMessage(), $exception->getInvalidData());
-
-                    continue;
+                    yield [
+                        'success' => false,
+                        'error' => $exception->getMessage(),
+                        'raw' => $exception->getInvalidData()
+                    ];
                 }
             }
         } finally {
