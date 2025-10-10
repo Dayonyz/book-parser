@@ -24,6 +24,10 @@ abstract class MappedEntryTransformer implements EntryTransformer
         $this->transformMaps = $transformMaps;
     }
 
+    /**
+     * @param array $maps
+     * @return void
+     */
     protected function validateTransformMaps(array $maps): void
     {
         foreach ($maps as $key => $transformer) {
