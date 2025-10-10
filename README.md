@@ -17,15 +17,13 @@ make ssh
 
 ## Parse Books
 
-```
-make ssh
-
-If you want to parse invalid ISBN - remove 'isbn' validator from
+If you want to parse invalid ISBN - remove 'isbn' validator from:
 
 app/Services/Parsers/BookEntryTransformer.php - 32 line
-
 ['isbn' => ['required', 'string', 'isbn']] >>>> ['isbn' => ['required', 'string']]
 
+```
+make ssh
 php artisan app:book-remote-parse
 ```
 
