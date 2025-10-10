@@ -54,6 +54,7 @@ abstract class RemoteJsonIterableParser implements ParserContract
         try {
             while (($line = fgets($handle)) !== false) {
                 $line = trim($line);
+
                 if ($line === '') continue;
 
                 $entryDecoded = json_decode($line, true);
