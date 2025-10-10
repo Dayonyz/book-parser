@@ -4,6 +4,7 @@ namespace App\Services\Parsers\Contracts;
 
 use App\Exceptions\InvalidEntryTransformerException;
 use App\Services\Parsers\Contracts\IterableParser as ParserContract;
+use App\Services\Parsers\Dto\EntryResponse;
 use InvalidArgumentException;
 use Exception;
 use Generator;
@@ -35,6 +36,7 @@ abstract class RemoteJsonIterableParser implements ParserContract
 
     /**
      * @throws Exception
+     * @return Generator<EntryResponse>
      */
     public function iterateEntries(): Generator
     {
@@ -57,26 +59,29 @@ abstract class RemoteJsonIterableParser implements ParserContract
                 $entryDecoded = json_decode($line, true);
 
                 if (!$entryDecoded) {
-                    yield [
-                        'success' => false,
-                        'error' => "Invalid JSON",
-                        'raw' => $line
-                    ];
+                    yield new EntryResponse(
+                        false,
+                        null,
+                        "Invalid JSON",
+                        $line
+                    );
+
                     continue;
                 }
 
                 try {
                     $transformedEntry = $this->transformer->transform($entryDecoded);
-                    yield [
-                        'success' => true,
-                        'data' => $transformedEntry
-                    ];
+                    yield new EntryResponse(
+                        true,
+                        $transformedEntry,
+                    );
                 } catch (InvalidEntryTransformerException $exception) {
-                    yield [
-                        'success' => false,
-                        'error' => $exception->getMessage(),
-                        'raw' => $exception->getInvalidData()
-                    ];
+                    yield new EntryResponse(
+                        false,
+                        null,
+                        $exception->getMessage(),
+                        $exception->getInvalidData()
+                    );
                 }
             }
         } finally {

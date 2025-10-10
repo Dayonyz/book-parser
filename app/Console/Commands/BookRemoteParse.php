@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Services\Importers\BookImporter;
 use App\Services\Parsers\BookRemoteJsonParser;
+use App\Services\Parsers\Dto\EntryResponse;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -35,13 +36,16 @@ class BookRemoteParse extends Command
         $imported = 0;
         $skipped = 0;
 
+        /**
+         * @var EntryResponse $result
+         */
         foreach ($parser->iterateEntries() as $result) {
-            if ($result['success']) {
-                BookImporter::import($result['data']);
+            if ($result->success) {
+                BookImporter::import($result->data);
                 $imported++;
             } else {
                 $skipped++;
-                Log::warning("Entry skipped: {$result['error']}", $result['raw'] ?? []);
+                Log::warning("Entry skipped: {$result->error}", $result->raw ?? []);
             }
         }
 
