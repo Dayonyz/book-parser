@@ -46,7 +46,6 @@ class BookRemoteParse extends Command
             }
         }
 
-
         $this->info("Imported: $imported, Skipped: $skipped, check logs");
     }
 }
