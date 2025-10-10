@@ -3,10 +3,11 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use JetBrains\PhpStorm\ArrayShape;
 
 class BookResource extends JsonResource
 {
-    public function toArray($request)
+    #[ArrayShape(['title' => "mixed", 'short_description' => "mixed", 'description' => "mixed", 'authors' => "mixed", 'published_at' => "mixed"])] public function toArray($request)
     {
         return [
             'title' => $this->title,

@@ -3,7 +3,7 @@
 namespace App\Services\Parsers\Contracts;
 
 use App\Exceptions\InvalidEntryTransformerException;
-use App\Services\Parsers\ValueObjects\TransformedField;
+use App\Services\Parsers\Dto\TransformedField;
 use InvalidArgumentException;
 
 abstract class MappedEntryTransformer implements EntryTransformer

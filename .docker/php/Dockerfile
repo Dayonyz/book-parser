@@ -8,8 +8,6 @@ ARG GROUP_DOCKER_ID
 RUN apt-get update && apt-get install -y \
     git \
     curl \
-    libc-client-dev \
-    libkrb5-dev \
     libzip-dev \
     libpq-dev \
     libicu-dev \
@@ -24,18 +22,19 @@ RUN apt-get update && apt-get install -y \
     cron \
     nano \
     graphviz \
-    jq
+    jq && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Node.js + npm
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash && \
-    apt-get install -y nodejs
+    apt-get install -y nodejs && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Setup clear
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # PHP extensions
-RUN docker-php-ext-configure imap --with-imap --with-kerberos --with-imap-ssl && \
-    docker-php-ext-configure gd --with-freetype --with-jpeg && \
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install \
         pdo_mysql \
         intl \
@@ -45,7 +44,6 @@ RUN docker-php-ext-configure imap --with-imap --with-kerberos --with-imap-ssl &&
         soap \
         exif \
         bcmath \
-        imap \
         pcntl \
         posix
 

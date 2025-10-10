@@ -1,21 +1,19 @@
 <?php
 
-namespace App\Services\Parsers;
+namespace App\Services\Parsers\Contracts;
 
 use App\Exceptions\InvalidEntryTransformerException;
-use App\Services\Parsers\Contracts\Downloader;
-use App\Services\Parsers\Contracts\EntryTransformer;
 use App\Services\Parsers\Contracts\IterableParser as ParserContract;
-use Exception;
-use Generator;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
+use Exception;
+use Generator;
 
-class RemoteJsonIterableParser implements ParserContract
+abstract class RemoteJsonIterableParser implements ParserContract
 {
-    private string $url;
-    private EntryTransformer $transformer;
-    private ?Downloader $downloader;
+    protected string $url;
+    protected EntryTransformer $transformer;
+    protected ?Downloader $downloader;
 
     public function __construct(
         string                $url,
@@ -73,6 +71,7 @@ class RemoteJsonIterableParser implements ParserContract
 
                 } catch (InvalidEntryTransformerException $exception) {
                     Log::warning("Entry skipped: " . $exception->getMessage(), $exception->getInvalidData());
+
                     continue;
                 }
             }
@@ -80,5 +79,4 @@ class RemoteJsonIterableParser implements ParserContract
             fclose($handle);
         }
     }
-
 }

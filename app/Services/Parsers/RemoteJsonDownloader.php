@@ -24,7 +24,7 @@ class RemoteJsonDownloader implements Downloader
         );
 
         if (!$response->successful() || !file_exists($this->getFilePath())) {
-            throw new Exception("Cannot download remote resource '{$this->url}'");
+            throw new Exception("Cannot download remote json '{$this->url}': {$response->errorOutput()}");
         }
     }
 

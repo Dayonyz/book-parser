@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Parsers\ValueObjects;
+namespace App\Services\Parsers\Dto;
 
 class TransformedField
 {

@@ -3,7 +3,7 @@ sshContainer=php
 mysqlContainer=mysql
 
 build: ## Builds Docker container
-	docker-compose build --no-cache $(sshContainer)
+	docker compose build --no-cache $(sshContainer)
 
 set-app-slug: ## Converts APP_NAME to DOCKER_APP_SLUG
 	@APP_NAME=$$(grep '^APP_NAME=' .env | cut -d '=' -f2-); \
@@ -135,7 +135,7 @@ install: ## First installation
 	@make stop && \
 	rm -rf .docker/mysql/volumes/*
 	@make start && \
-	docker-compose exec $(sshContainer) bash -c "\
+	docker compose exec $(sshContainer) bash -c "\
 		composer install && \
 		composer dump-autoload && \
 		php artisan migrate:fresh && \
@@ -146,23 +146,23 @@ install: ## First installation
 kill: ## Stops all docker containers
 	docker stop $(shell docker ps -aq)
 
-start: ## Starts docker-compose
-	docker-compose up -d $(serviceList) && docker-compose exec $(sshContainer) bash -c "php artisan queue:work --daemon &"
+start: ## Starts docker compose
+	docker compose up -d $(serviceList) && docker compose exec $(sshContainer) bash -c "php artisan queue:work --daemon &"
 
-stop: ## Stops docker-compose
-	docker-compose down
+stop: ## Stops docker compose
+	docker compose down
 
-restart: ## Stops docker-compose and starts docker-compose
+restart: ## Stops docker compose and starts docker compose
 	make stop && make start
 
-ssh: ## SSH to docker-compose
-	docker-compose exec $(sshContainer) bash
+ssh: ## SSH to docker compose
+	docker compose exec $(sshContainer) bash
 
 db-create: ## Create MySQL database
 	DB_PASSWORD=$$(grep '^DB_PASSWORD=' .env | cut -d '=' -f2); \
 	DB_USERNAME=$$(grep '^DB_USERNAME=' .env | cut -d '=' -f2); \
 	DB_DATABASE=$$(grep '^DB_DATABASE=' .env | cut -d '=' -f2); \
-	docker-compose exec $(mysqlContainer) bash -c "mysql -h db -u$$DB_USERNAME -p'$$DB_PASSWORD' -e 'CREATE DATABASE IF NOT EXISTS $$DB_DATABASE;'"
+	docker compose exec $(mysqlContainer) bash -c "mysql -h db -u$$DB_USERNAME -p'$$DB_PASSWORD' -e 'CREATE DATABASE IF NOT EXISTS $$DB_DATABASE;'"
 
 prune: ## Clear build cache
 	sudo docker system prune -af

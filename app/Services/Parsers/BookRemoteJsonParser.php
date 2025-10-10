@@ -3,19 +3,17 @@
 namespace App\Services\Parsers;
 
 use App\Services\Parsers\Contracts\IterableParser;
-use Exception;
-use Generator;
+use App\Services\Parsers\Contracts\RemoteJsonIterableParser;
 
-class BookRemoteJsonParser implements IterableParser
+class BookRemoteJsonParser extends RemoteJsonIterableParser implements IterableParser
 {
-    private RemoteJsonIterableParser $parser;
     private static ?BookRemoteJsonParser $instance = null;
 
     private function __construct()
     {
         $url = config('app.parser.book.remote_url');
 
-        $this->parser = new RemoteJsonIterableParser(
+        parent:: __construct(
             $url,
             new BookMappedEntryTransformer(),
             new RemoteJsonDownloader($url, config('app.parser.book.local_path'))
@@ -24,7 +22,6 @@ class BookRemoteJsonParser implements IterableParser
 
     private function __clone(): void
     {
-
     }
 
     public static function makeInstance(): static
@@ -34,15 +31,5 @@ class BookRemoteJsonParser implements IterableParser
         }
 
         return self::$instance;
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function iterateEntries(): Generator
-    {
-        foreach ($this->parser->iterateEntries() as $bookEntry) {
-            yield $bookEntry;
-        }
     }
 }
