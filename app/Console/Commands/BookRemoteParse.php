@@ -7,7 +7,6 @@ use App\Services\Parsers\BookRemoteJsonParser;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use Throwable;
 
 class BookRemoteParse extends Command
 {

@@ -4,7 +4,6 @@ namespace App\Services\Parsers\Contracts;
 
 use App\Exceptions\InvalidEntryTransformerException;
 use App\Services\Parsers\Contracts\IterableParser as ParserContract;
-use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use Exception;
 use Generator;
