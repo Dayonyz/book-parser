@@ -23,7 +23,7 @@ class BookMappedEntryTransformer extends MappedEntryTransformer
     protected function getTransformMaps(): array
     {
         return [
-            'isbn' => function ($entry) {
+            'isbn' => function ($entry): TransformedField {
                 $data = [];
                 $data['isbn'] = isset($entry['isbn']) && $entry['isbn'] ?
                     preg_replace('/[\s\-]+/u', '', $entry['isbn']) :
@@ -46,7 +46,7 @@ class BookMappedEntryTransformer extends MappedEntryTransformer
 
                 return new TransformedField('isbn', $data['isbn']);
             },
-            'title' => function ($entry) {
+            'title' => function ($entry): TransformedField {
                 $data = ['title' => trim($entry['title'] ?? '') ?: null];
 
                 $validator = Validator::make(
@@ -66,7 +66,7 @@ class BookMappedEntryTransformer extends MappedEntryTransformer
 
                 return new TransformedField('title', $data['title']);
             },
-            'shortDescription' => function ($entry) {
+            'shortDescription' => function ($entry): TransformedField {
                 $shortDescription =  $entry['shortDescription'] ?? null;
 
                 if ($shortDescription) {
@@ -75,7 +75,7 @@ class BookMappedEntryTransformer extends MappedEntryTransformer
 
                 return new TransformedField('short_description', $shortDescription);
             },
-            'longDescription' => function ($entry) {
+            'longDescription' => function ($entry): TransformedField {
                 $longDescription =  $entry['longDescription'] ?? null;
 
                 if ($longDescription) {
@@ -84,7 +84,7 @@ class BookMappedEntryTransformer extends MappedEntryTransformer
 
                 return new TransformedField('description', $longDescription);
             },
-            'authors' => function($entry) {
+            'authors' => function($entry): TransformedField {
                 if (!isset($entry['authors']) || !is_array($entry['authors'])) {
                     throw new InvalidEntryException(
                         "Missing or invalid 'authors'",
@@ -134,7 +134,7 @@ class BookMappedEntryTransformer extends MappedEntryTransformer
 
                 return new TransformedField('authors', $filteredAuthors);
             },
-            'publishedDate' => function($entry) {
+            'publishedDate' => function($entry): TransformedField {
                 if (isset($entry['publishedDate']['$date'])) {
                     try {
                         $date = new DateTime($entry['publishedDate']['$date']);

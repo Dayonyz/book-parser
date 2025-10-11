@@ -5,11 +5,17 @@ namespace App\Services\Parsers\Contracts;
 use App\Services\Parsers\Exceptions\InvalidEntryException;
 use App\Services\Parsers\Dto\TransformedField;
 use InvalidArgumentException;
+use ReflectionException;
+use ReflectionFunction;
+use ReflectionNamedType;
 
 abstract class MappedEntryTransformer implements EntryTransformer
 {
     private array $transformMaps;
 
+    /**
+     * @throws ReflectionException
+     */
     public function __construct(array $transformMaps = [])
     {
         $this->setTransformMaps(!empty($transformMaps) ? $transformMaps : $this->getTransformMaps());
@@ -17,6 +23,9 @@ abstract class MappedEntryTransformer implements EntryTransformer
 
     abstract protected function getTransformMaps(): array;
 
+    /**
+     * @throws ReflectionException
+     */
     protected function setTransformMaps(array $transformMaps)
     {
         $this->validateTransformMaps($transformMaps);
@@ -27,6 +36,7 @@ abstract class MappedEntryTransformer implements EntryTransformer
     /**
      * @param array $maps
      * @return void
+     * @throws ReflectionException
      */
     protected function validateTransformMaps(array $maps): void
     {
@@ -39,6 +49,25 @@ abstract class MappedEntryTransformer implements EntryTransformer
 
             if (!is_callable($transformer)) {
                 throw new InvalidArgumentException("Transformer for '$key' must be a Closure or callable");
+            }
+
+            $reflection = new ReflectionFunction($transformer);
+            $returnType = $reflection->getReturnType();
+
+            if ($returnType === null) {
+                throw new InvalidArgumentException("Transformer for '$key' must declare a return type");
+            }
+
+            if ($returnType instanceof ReflectionNamedType) {
+                $typeName = $returnType->getName();
+
+                if ($typeName !== TransformedField::class) {
+                    throw new InvalidArgumentException(
+                        "Transformer for '$key' must return instance of " .
+                        TransformedField::class .
+                        ", got '$typeName'"
+                    );
+                }
             }
         }
     }
@@ -57,13 +86,9 @@ abstract class MappedEntryTransformer implements EntryTransformer
         $resultEntry = [];
 
         foreach ($this->transformMaps as $fieldKey => $transformCallback) {
-            $result = $transformCallback($entry);
+            $transformed = $transformCallback($entry);
 
-            if ($result instanceof TransformedField) {
-                $resultEntry[$result->name] = $result->value;
-            } else {
-                $resultEntry[$fieldKey] = $result;
-            }
+            $resultEntry[$transformed->name] = $transformed->value;
         }
 
         return $resultEntry;
