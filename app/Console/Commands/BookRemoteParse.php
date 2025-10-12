@@ -41,7 +41,7 @@ class BookRemoteParse extends Command
          */
         foreach ($parser->iterateEntries() as $result) {
             if ($result->success) {
-                BookImporter::import($result->data);
+                BookImporter::import($result->entry);
                 $imported++;
             } else {
                 $skipped++;
