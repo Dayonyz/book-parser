@@ -5,7 +5,7 @@ namespace App\Providers;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Support\ServiceProvider;
 
-class CustomValidationServiceProvider extends ServiceProvider
+class ValidatorsServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
