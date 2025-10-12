@@ -2,7 +2,7 @@
 
 namespace App\Services\Parsers\Dto;
 
-class EntryResponse
+class EntryTransformed
 {
     public function __construct(
         public readonly bool $success,

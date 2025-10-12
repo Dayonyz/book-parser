@@ -3,7 +3,7 @@
 namespace App\Services\Parsers\Contracts;
 
 use App\Services\Parsers\Exceptions\InvalidEntryException;
-use App\Services\Parsers\Dto\TransformedField;
+use App\Services\Parsers\Dto\FieldTransformed;
 use InvalidArgumentException;
 use ReflectionException;
 use ReflectionFunction;
@@ -61,10 +61,10 @@ abstract class MappedEntryTransformer implements EntryTransformer
             if ($returnType instanceof ReflectionNamedType) {
                 $typeName = $returnType->getName();
 
-                if ($typeName !== TransformedField::class) {
+                if ($typeName !== FieldTransformed::class) {
                     throw new InvalidArgumentException(
                         "Transformer for '$key' must return instance of " .
-                        TransformedField::class .
+                        FieldTransformed::class .
                         ", got '$typeName'"
                     );
                 }

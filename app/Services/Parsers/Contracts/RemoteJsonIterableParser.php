@@ -4,7 +4,7 @@ namespace App\Services\Parsers\Contracts;
 
 use App\Services\Parsers\Exceptions\InvalidEntryException;
 use App\Services\Parsers\Contracts\IterableParser as ParserContract;
-use App\Services\Parsers\Dto\EntryResponse;
+use App\Services\Parsers\Dto\EntryTransformed;
 use InvalidArgumentException;
 use Exception;
 use Generator;
@@ -35,8 +35,8 @@ abstract class RemoteJsonIterableParser implements ParserContract
     }
 
     /**
-     * @throws Exception
-     * @return Generator<EntryResponse>
+     * @return Generator<EntryTransformed>
+     *@throws Exception
      */
     public function iterateEntries(): Generator
     {
@@ -60,7 +60,7 @@ abstract class RemoteJsonIterableParser implements ParserContract
                 $entryDecoded = json_decode($line, true);
 
                 if (!$entryDecoded) {
-                    yield new EntryResponse(
+                    yield new EntryTransformed(
                         false,
                         null,
                         "Invalid JSON",
@@ -72,12 +72,12 @@ abstract class RemoteJsonIterableParser implements ParserContract
 
                 try {
                     $transformedEntry = $this->transformer->transform($entryDecoded);
-                    yield new EntryResponse(
+                    yield new EntryTransformed(
                         true,
                         $transformedEntry,
                     );
                 } catch (InvalidEntryException $exception) {
-                    yield new EntryResponse(
+                    yield new EntryTransformed(
                         false,
                         null,
                         $exception->getMessage(),

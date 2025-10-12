@@ -2,7 +2,7 @@
 
 namespace App\Services\Parsers\Dto;
 
-class TransformedField
+class FieldTransformed
 {
     public function __construct(
         public readonly string $name,

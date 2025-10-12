@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Services\Importers\BookImporter;
 use App\Services\Parsers\BookRemoteJsonParser;
-use App\Services\Parsers\Dto\EntryResponse;
+use App\Services\Parsers\Dto\EntryTransformed;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -37,7 +37,7 @@ class BookRemoteParse extends Command
         $skipped = 0;
 
         /**
-         * @var EntryResponse $result
+         * @var EntryTransformed $result
          */
         foreach ($parser->iterateEntries() as $result) {
             if ($result->success) {

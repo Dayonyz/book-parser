@@ -4,7 +4,7 @@ namespace App\Services\Parsers;
 
 use App\Services\Parsers\Exceptions\InvalidEntryException;
 use App\Services\Parsers\Contracts\MappedEntryTransformer;
-use App\Services\Parsers\Dto\TransformedField;
+use App\Services\Parsers\Dto\FieldTransformed;
 use Illuminate\Support\Facades\Validator;
 use JetBrains\PhpStorm\ArrayShape;
 use DateTime;
@@ -23,7 +23,7 @@ class BookMappedEntryTransformer extends MappedEntryTransformer
     protected function getTransformMaps(): array
     {
         return [
-            'isbn' => function ($entry): TransformedField {
+            'isbn' => function ($entry): FieldTransformed {
                 $data = [];
                 $data['isbn'] = isset($entry['isbn']) && $entry['isbn'] ?
                     preg_replace('/[\s\-]+/u', '', $entry['isbn']) :
@@ -44,9 +44,9 @@ class BookMappedEntryTransformer extends MappedEntryTransformer
                     );
                 }
 
-                return new TransformedField('isbn', $data['isbn']);
+                return new FieldTransformed('isbn', $data['isbn']);
             },
-            'title' => function ($entry): TransformedField {
+            'title' => function ($entry): FieldTransformed {
                 $data = ['title' => trim($entry['title'] ?? '') ?: null];
 
                 $validator = Validator::make(
@@ -64,27 +64,27 @@ class BookMappedEntryTransformer extends MappedEntryTransformer
                     );
                 }
 
-                return new TransformedField('title', $data['title']);
+                return new FieldTransformed('title', $data['title']);
             },
-            'shortDescription' => function ($entry): TransformedField {
+            'shortDescription' => function ($entry): FieldTransformed {
                 $shortDescription =  $entry['shortDescription'] ?? null;
 
                 if ($shortDescription) {
                     $shortDescription = trim($shortDescription);
                 }
 
-                return new TransformedField('short_description', $shortDescription);
+                return new FieldTransformed('short_description', $shortDescription);
             },
-            'longDescription' => function ($entry): TransformedField {
+            'longDescription' => function ($entry): FieldTransformed {
                 $longDescription =  $entry['longDescription'] ?? null;
 
                 if ($longDescription) {
                     $longDescription = trim($longDescription);
                 }
 
-                return new TransformedField('description', $longDescription);
+                return new FieldTransformed('description', $longDescription);
             },
-            'authors' => function($entry): TransformedField {
+            'authors' => function($entry): FieldTransformed {
                 if (!isset($entry['authors']) || !is_array($entry['authors'])) {
                     throw new InvalidEntryException(
                         "Missing or invalid 'authors'",
@@ -132,9 +132,9 @@ class BookMappedEntryTransformer extends MappedEntryTransformer
                     );
                 }
 
-                return new TransformedField('authors', $filteredAuthors);
+                return new FieldTransformed('authors', $filteredAuthors);
             },
-            'publishedDate' => function($entry): TransformedField {
+            'publishedDate' => function($entry): FieldTransformed {
                 if (isset($entry['publishedDate']['$date'])) {
                     try {
                         $date = new DateTime($entry['publishedDate']['$date']);
@@ -148,7 +148,7 @@ class BookMappedEntryTransformer extends MappedEntryTransformer
                     $date = null;
                 }
 
-                return new TransformedField('published_at', $date);
+                return new FieldTransformed('published_at', $date);
             }
         ];
     }
