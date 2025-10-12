@@ -3,7 +3,7 @@
 namespace App\Services\Parsers\Contracts;
 
 use App\Services\Parsers\Exceptions\InvalidEntryException;
-use App\Services\Parsers\Dto\FieldTransformed;
+use App\Services\Parsers\DTOs\FieldTransformed;
 use InvalidArgumentException;
 use ReflectionException;
 use ReflectionFunction;

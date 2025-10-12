@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Parsers\Dto;
+namespace App\Services\Parsers\DTOs;
 
 class FieldTransformed
 {

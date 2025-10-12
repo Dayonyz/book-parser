@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Services\Importers\BookImporter;
 use App\Services\Parsers\BookRemoteJsonParser;
-use App\Services\Parsers\Dto\EntryTransformed;
+use App\Services\Parsers\DTOs\EntryTransformed;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;

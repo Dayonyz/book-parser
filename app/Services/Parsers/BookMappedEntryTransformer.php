@@ -4,7 +4,7 @@ namespace App\Services\Parsers;
 
 use App\Services\Parsers\Exceptions\InvalidEntryException;
 use App\Services\Parsers\Contracts\MappedEntryTransformer;
-use App\Services\Parsers\Dto\FieldTransformed;
+use App\Services\Parsers\DTOs\FieldTransformed;
 use Illuminate\Support\Facades\Validator;
 use JetBrains\PhpStorm\ArrayShape;
 use DateTime;
