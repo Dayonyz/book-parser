@@ -27,7 +27,6 @@ return new class extends Migration
             DB::statement('CREATE FULLTEXT INDEX ft_short_description_ngram ON books(short_description) WITH PARSER ngram');
             DB::statement('CREATE FULLTEXT INDEX ft_description_ngram ON books(description) WITH PARSER ngram');
         }
-
     }
 
     /**
